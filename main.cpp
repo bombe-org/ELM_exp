@@ -19,6 +19,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <omp.h>
 
 #define  NN 581012
 #define LL 100
@@ -162,7 +164,10 @@ MatrixXd buildTargetMatrix(double *Y, int nLabels) {
 }
 
 int main() {
-
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	int n;
+    n = Eigen::nbThreads();
+    cout<<n<<"\n";
     double *x = (double *) malloc(31374648 * sizeof(double));
     double *y = (double *) malloc(581012 * sizeof(double));
 
@@ -195,16 +200,16 @@ int main() {
     MatrixXd outW;   // output weight
     MatrixXd mScore;  //predict result
 
-    clock_t t1, t2, t3, t4;
-
-    t1 = clock();
+    start = std::chrono::system_clock::now();
     elmTrain(x, 54, NN, y, LL, CC, inW, bias, outW);
-    t2 = clock();
-    cout << "Training time = " << (1.0 * t2 - t1) / CLOCKS_PER_SEC << "ms" << endl;
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "Training time: " << elapsed_seconds.count() << "s\n";
 
-    t3 = clock();
+    start = std::chrono::system_clock::now();
     elmPredict(x, 54, NN, mScore, inW, bias, outW);
-    t4 = clock();
-    cout << "Predicting time = " << (1.0 * t4 - t3) / CLOCKS_PER_SEC << "ms" << endl;
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "Predict time: " << elapsed_seconds.count() << "s\n";
     return 0;
 }
