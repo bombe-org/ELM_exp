@@ -209,7 +209,7 @@ int main() {
     start = std::chrono::system_clock::now();
     elmPredict(x, 54, NN, mScore, inW, bias, outW);
     end = std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    elapsed_seconds = end-start;
     std::cout << "Predict time: " << elapsed_seconds.count() << "s\n";
     return 0;
 }
