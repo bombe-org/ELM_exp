@@ -58,7 +58,8 @@ int elmTrain(double *X, int dims, int nsmp,
 
 // generate random bias vectors
     bias = MatrixXd::Random(nhn, 1);
-
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
 // compute the pre-H matrix
     MatrixXd preH = inW * mX + bias.replicate(1, nsmp);
 
@@ -71,7 +72,9 @@ int elmTrain(double *X, int dims, int nsmp,
 
 // solve the output weights as a solution to a system of linear equations
     outW = A.llt().solve(b);
-
+	end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "Training time: " << elapsed_seconds.count() << "s\n";
     return 0;
 
 }
@@ -86,7 +89,8 @@ int elmPredict(double *X, int dims, int nsmp,
 
     // map the sample into the Eigen's matrix object
     MatrixXd mX = Map<MatrixXd>(X, dims, nsmp);
-
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
     // build the pre-H matrix
     MatrixXd preH = inW * mX + bias.replicate(1, nsmp);
 
@@ -95,7 +99,9 @@ int elmPredict(double *X, int dims, int nsmp,
 
     // compute output scores
     mScores = (H.transpose() * outW).transpose();
-
+	end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+	std::cout << "Predict time: " << elapsed_seconds.count() << "s\n";
     return 0;
 }
 
@@ -163,11 +169,8 @@ MatrixXd buildTargetMatrix(double *Y, int nLabels) {
 
 }
 
-int main() {
-	std::chrono::time_point<std::chrono::system_clock> start, end;
-	int n;
-    n = Eigen::nbThreads();
-    cout<<n<<"\n";
+int main() {	
+    cout<<Eigen::nbThreads()<<"\n";
     double *x = (double *) malloc(31374648 * sizeof(double));
     double *y = (double *) malloc(581012 * sizeof(double));
 
@@ -200,16 +203,8 @@ int main() {
     MatrixXd outW;   // output weight
     MatrixXd mScore;  //predict result
 
-    start = std::chrono::system_clock::now();
+    
     elmTrain(x, 54, NN, y, LL, CC, inW, bias, outW);
-    end = std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end-start;
-    std::cout << "Training time: " << elapsed_seconds.count() << "s\n";
-
-    start = std::chrono::system_clock::now();
     elmPredict(x, 54, NN, mScore, inW, bias, outW);
-    end = std::chrono::system_clock::now();
-    elapsed_seconds = end-start;
-    std::cout << "Predict time: " << elapsed_seconds.count() << "s\n";
     return 0;
 }

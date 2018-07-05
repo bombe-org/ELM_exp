@@ -14,8 +14,7 @@ the dataset we used in this project: http://archive.ics.uci.edu/ml/datasets/Cove
 the project is depending on the libarary of Eigen: http://eigen.tuxfamily.org/index.php?title=Main_Page
 
 instruction:
-- cmake .
-- make
-- ./ELM_naive
+- g++ -std=c++11 -O3 -fopenmp main.cpp -o ELM
+- OMP_NUM_THREADS=n ./ELM    (n is the number of threads)
 
 ## ack
