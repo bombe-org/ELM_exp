@@ -19,11 +19,11 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include <omp.h>
 
-#define  NN 581012
-#define LL 100
-#define CC 0.1
+#define  N_COUNT 581012
+#define IN_COUNT 54
+#define L_COUNT 100
+#define C_COUNT 0.1
 
 #include "Eigen/Core"
 #include "Eigen/Cholesky"
@@ -165,13 +165,12 @@ MatrixXd buildTargetMatrix(double *Y, int nLabels) {
     targets *= 2;
     targets.array() -= 1;
     return targets;
-
 }
 
 int main() {	
     cout<<Eigen::nbThreads()<<"\n";
-    double *x = (double *) malloc(31374648 * sizeof(double));
-    double *y = (double *) malloc(581012 * sizeof(double));
+    double *x = (double *) malloc(IN_COUNT * N_COUNT * sizeof(double));
+    double *y = (double *) malloc(N_COUNT * sizeof(double));
 
     std::ifstream fin("covtype.data");
     std::string line;
@@ -188,8 +187,8 @@ int main() {
             data[column] = atoi(p);
 
             p = strtok(NULL, ",");
-            if (column < 54)
-                x[row * 54 + column] = data[column];
+            if (column < IN_COUNT)
+                x[row * IN_COUNT + column] = data[column];
             else
                 y[row] = data[column];
             ++column;
@@ -202,7 +201,7 @@ int main() {
     MatrixXd outW;   // output weight
     MatrixXd mScore;  //predict result
     
-    elmTrain(x, 54, NN, y, LL, CC, inW, bias, outW);
-    elmPredict(x, 54, NN, mScore, inW, bias, outW);
+    elmTrain(x, IN_COUNT, N_COUNT, y, L_COUNT, C_COUNT, inW, bias, outW);
+    elmPredict(x, IN_COUNT, N_COUNT, mScore, inW, bias, outW);
     return 0;
 }
