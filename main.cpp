@@ -16,7 +16,6 @@
 //                                 //
 /////////////////////////////////////
 
-
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -202,7 +201,6 @@ int main() {
     MatrixXd bias;   // b
     MatrixXd outW;   // output weight
     MatrixXd mScore;  //predict result
-
     
     elmTrain(x, 54, NN, y, LL, CC, inW, bias, outW);
     elmPredict(x, 54, NN, mScore, inW, bias, outW);
