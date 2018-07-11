@@ -20,10 +20,10 @@
 #include <fstream>
 #include <chrono>
 
-#define  N_COUNT 581012
-#define IN_COUNT 54
-#define L_COUNT 1000
-#define C_COUNT 0.1
+int  N_COUNT = 581012;
+int  IN_COUNT = 54;
+int  L_COUNT = 1000;
+double  C_COUNT = 0.1;
 
 #include "Eigen/Core"
 #include "Eigen/Cholesky"
@@ -194,6 +194,8 @@ MatrixXd buildTargetMatrix(double *Y, int nLabels) {
 int main(int argc,const char* argv[]) {	
 Eigen::setNbThreads(atoi(argv[1])); 
 cout<<Eigen::nbThreads()<<"\n";
+N_COUNT = (atoi(argv[2])<N_COUNT)?atoi(argv[2]):N_COUNT;
+L_COUNT = (atoi(argv[3])<L_COUNT)?atoi(argv[3]):L_COUNT;
     double *x = (double *) malloc(IN_COUNT * N_COUNT * sizeof(double));
     double *y = (double *) malloc(N_COUNT * sizeof(double));
 
@@ -203,7 +205,9 @@ cout<<Eigen::nbThreads()<<"\n";
     long long int row = 0;
     int column;
     int data[55];
-    while (getline(fin, line)) {
+int n_count = 0;
+    while (n_count++<N_COUNT) {
+getline(fin, line);
         char cstr[100000];
         strcpy(cstr, line.c_str());
         char *p = strtok(cstr, ",");
