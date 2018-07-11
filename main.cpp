@@ -22,7 +22,7 @@
 
 #define  N_COUNT 581012
 #define IN_COUNT 54
-#define L_COUNT 100
+#define L_COUNT 1000
 #define C_COUNT 0.1
 
 #include "Eigen/Core"
@@ -45,6 +45,7 @@ int elmTrain(double *X, int dims, int nsmp,
              const int nhn, const double C,
              MatrixBase<Derived> &inW, MatrixBase<Derived> &bias, MatrixBase<Derived> &outW) {
 
+	std::chrono::time_point<std::chrono::system_clock> start, end;
 // map the samples into the matrix object
     MatrixXd mX = Map<MatrixXd>(X, dims, nsmp);
 
@@ -53,27 +54,50 @@ int elmTrain(double *X, int dims, int nsmp,
     MatrixXd mTargets = buildTargetMatrix(Y, nsmp);
 
 // generate random input weight matrix - inW
+	start = std::chrono::system_clock::now();
     inW = MatrixXd::Random(nhn, dims);
 
-// generate random bias vectors
-    bias = MatrixXd::Random(nhn, 1);
-	std::chrono::time_point<std::chrono::system_clock> start, end;
-	start = std::chrono::system_clock::now();
-// compute the pre-H matrix
-    MatrixXd preH = inW * mX + bias.replicate(1, nsmp);
-
-// compute hidden neuron output
-    MatrixXd H = (1 + (-preH.array()).exp()).cwiseInverse();
-
-// build matrices to solve Ax = b
-    MatrixXd A = (MatrixXd::Identity(nhn, nhn)).array() * (1 / C) + (H * H.transpose()).array();
-    MatrixXd b = H * mTargets.transpose();
-
-// solve the output weights as a solution to a system of linear equations
-    outW = A.llt().solve(b);
 	end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
-    std::cout << "Training time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "random w time: " << elapsed_seconds.count() << "s\n";
+// generate random bias vectors
+	start = std::chrono::system_clock::now();
+    bias = MatrixXd::Random(nhn, 1);
+
+	end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    std::cout << "random b time: " << elapsed_seconds.count() << "s\n";
+// compute the pre-H matrix
+start = std::chrono::system_clock::now();
+    MatrixXd preH = inW * mX + bias.replicate(1, nsmp);
+end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    std::cout << "computing H  time: " << elapsed_seconds.count() << "s\n";
+// compute hidden neuron output
+start = std::chrono::system_clock::now();
+    MatrixXd H = (1 + (-preH.array()).exp()).cwiseInverse();
+end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    std::cout << "computing g(H)  time: " << elapsed_seconds.count() << "s\n";
+
+// build matrices to solve Ax = b
+start = std::chrono::system_clock::now();
+    MatrixXd A = (MatrixXd::Identity(nhn, nhn)).array() * (1 / C) + (H * H.transpose()).array();
+end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    std::cout << "computing A  time: " << elapsed_seconds.count() << "s\n";
+start = std::chrono::system_clock::now();
+    MatrixXd b = H * mTargets.transpose();
+end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    std::cout << "computing b  time: " << elapsed_seconds.count() << "s\n";
+
+// solve the output weights as a solution to a system of linear equations
+start = std::chrono::system_clock::now();
+    outW = A.llt().solve(b);
+end = std::chrono::system_clock::now();
+    elapsed_seconds = end-start;
+    std::cout << "solving time: " << elapsed_seconds.count() << "s\n";
     return 0;
 
 }
@@ -167,8 +191,9 @@ MatrixXd buildTargetMatrix(double *Y, int nLabels) {
     return targets;
 }
 
-int main() {	
-    cout<<Eigen::nbThreads()<<"\n";
+int main(int argc,const char* argv[]) {	
+Eigen::setNbThreads(atoi(argv[1])); 
+cout<<Eigen::nbThreads()<<"\n";
     double *x = (double *) malloc(IN_COUNT * N_COUNT * sizeof(double));
     double *y = (double *) malloc(N_COUNT * sizeof(double));
 

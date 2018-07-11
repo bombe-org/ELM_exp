@@ -18,6 +18,6 @@ before build: you MUST download the dataset into the root dir.
 ### instruction:
 
 - g++ -std=c++11 -O3 -fopenmp -mavx -mfma  main.cpp -o ELM
-- OMP_NUM_THREADS=n ./ELM    (n is the number of threads)
+- ./ELM n    (n is the number of threads)
 
 ## ack
