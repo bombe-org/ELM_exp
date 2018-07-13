@@ -13,11 +13,8 @@ the dataset we used in this project: http://archive.ics.uci.edu/ml/datasets/Cove
 
 the project is depending on the libarary of Eigen: http://eigen.tuxfamily.org/index.php?title=Main_Page
 
-before build: you MUST download the dataset into the root dir.
+instruction:
+- make core OR make simd
+- ./ELM_naive
 
-### instruction:
-
-- make OR make simd
-- ./ELM thread_cnt N L
-
-## ack
+## Ack

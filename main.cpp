@@ -59,45 +59,45 @@ int elmTrain(double *X, int dims, int nsmp,
 
 	end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
-    std::cout << "random w time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "random w time: " << elapsed_seconds.count() << "\n";
 // generate random bias vectors
 	start = std::chrono::system_clock::now();
     bias = MatrixXd::Random(nhn, 1);
 
 	end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
-    std::cout << "random b time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "random b time: " << elapsed_seconds.count() << "\n";
 // compute the pre-H matrix
 start = std::chrono::system_clock::now();
     MatrixXd preH = inW * mX + bias.replicate(1, nsmp);
 end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
-    std::cout << "computing H  time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "computing H  time: " << elapsed_seconds.count() << "\n";
 // compute hidden neuron output
 start = std::chrono::system_clock::now();
     MatrixXd H = (1 + (-preH.array()).exp()).cwiseInverse();
 end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
-    std::cout << "computing g(H)  time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "computing g(H)  time: " << elapsed_seconds.count() << "\n";
 
 // build matrices to solve Ax = b
 start = std::chrono::system_clock::now();
     MatrixXd A = (MatrixXd::Identity(nhn, nhn)).array() * (1 / C) + (H * H.transpose()).array();
 end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
-    std::cout << "computing A  time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "computing A  time: " << elapsed_seconds.count() << "\n";
 start = std::chrono::system_clock::now();
     MatrixXd b = H * mTargets.transpose();
 end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
-    std::cout << "computing b  time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "computing b  time: " << elapsed_seconds.count() << "\n";
 
 // solve the output weights as a solution to a system of linear equations
 start = std::chrono::system_clock::now();
     outW = A.llt().solve(b);
 end = std::chrono::system_clock::now();
     elapsed_seconds = end-start;
-    std::cout << "solving time: " << elapsed_seconds.count() << "s\n";
+    std::cout << "solving time: " << elapsed_seconds.count() << "\n";
     return 0;
 
 }
@@ -124,7 +124,7 @@ int elmPredict(double *X, int dims, int nsmp,
     mScores = (H.transpose() * outW).transpose();
 	end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
-	std::cout << "Predict time: " << elapsed_seconds.count() << "s\n";
+	std::cout << "Predict time: " << elapsed_seconds.count() << "\n";
     return 0;
 }
 
