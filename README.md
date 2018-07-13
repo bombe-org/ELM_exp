@@ -15,6 +15,6 @@ the project is depending on the libarary of Eigen: http://eigen.tuxfamily.org/in
 
 instruction:
 - make core OR make simd
-- ./ELM_naive
+- ./ELM thread_cnt N L
 
 ## Ack
