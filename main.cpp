@@ -19,11 +19,11 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-
+#define COVTYPE
 #ifdef COVTYPE
 int  N_COUNT = 581012;
 int  IN_COUNT = 54;
-int  nunique = 7
+int  nunique = 7;
 #endif
 int  L_COUNT = 1000;
 double  C_COUNT = 0.1;
