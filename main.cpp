@@ -206,6 +206,10 @@ MatrixXd buildTargetMatrix(double *Y, int nLabels) {
 }
 
 int main(int argc, const char *argv[]) {
+    if (argc == 2) {
+        Eigen::setNbThreads(atoi(argv[1]));
+        std::cout << Eigen::nbThreads() << "\n";
+    }
     if (argc == 4) {
         Eigen::setNbThreads(atoi(argv[1]));
         std::cout << Eigen::nbThreads() << "\n";
