@@ -209,12 +209,14 @@ int main(int argc, const char *argv[]) {
     if (argc == 2) {
         Eigen::setNbThreads(atoi(argv[1]));
         std::cout << Eigen::nbThreads() << "\n";
-    }
-    if (argc == 4) {
+    }else if (argc == 4) {
         Eigen::setNbThreads(atoi(argv[1]));
         std::cout << Eigen::nbThreads() << "\n";
         N_COUNT = (atoi(argv[2]) < N_COUNT) ? atoi(argv[2]) : N_COUNT;
         L_COUNT = (atoi(argv[3]) < L_COUNT) ? atoi(argv[3]) : L_COUNT;
+    } else{
+        std::cout<<"parameters error\n";
+        return -1;
     }
     double *x = (double *) malloc(IN_COUNT * N_COUNT * sizeof(double));
     double *y = (double *) malloc(N_COUNT * sizeof(double));
